@@ -1,0 +1,34 @@
+@page "{cod?}"
+@model WebApp_14712.Pages.InfopaisModel
+@{
+    ViewData["Title"] = "Informação do País";
+}
+
+<div style="max-width: 600px; margin: 30px auto; padding: 20px;">
+    @if (Model.InfoPais is not null)
+    {
+        <h1>@Model.InfoPais.OfficialName</h1>
+        
+        <img src="@Model.InfoPais.FlagUrl" alt="Bandeira de @Model.InfoPais.OfficialName" style="width: 100%; max-width: 400px; margin: 20px 0; border: 1px solid #ccc;" />
+        
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px;">
+            <p><strong>Código do País:</strong> @Model.CodigoPais (@Model.InfoPais.Cca2)</p>
+            <p><strong>Capital:</strong> @Model.InfoPais.Capital</p>
+            <p><strong>Região:</strong> @Model.InfoPais.Region</p>
+            <p><strong>População:</strong> @Model.InfoPais.Population</p>
+        </div>
+
+        <p style="margin-top: 20px;">
+            <a href="/">← Voltar à lista de países</a>
+        </p>
+    }
+    else
+    {
+        <h1>País não encontrado</h1>
+        <p>Não foi possível carregar os dados do país solicitado.</p>
+        <p>Utilize um código válido de país. Exemplos: <code>PT</code>, <code>ES</code>, <code>FR</code>, <code>DE</code></p>
+        <p style="margin-top: 20px;">
+            <a href="/">← Voltar à lista de países</a>
+        </p>
+    }
+</div>
