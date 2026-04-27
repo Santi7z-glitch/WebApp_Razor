@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData[index: "Title"] = "Home page";
+    ViewData["Title"] = "Home page";
 }
 
 <h1>Lista de Países</h1>
@@ -9,7 +9,7 @@
 @if (Model.Paises?.Count > 0)
 {
     <div style="display: flex; flex-wrap: wrap;">
-        @foreach (Models.Pais pais in Model.Paises)
+        @foreach (var pais in Model.Paises)
         {
             <div style="border: 1px solid #ccc; margin: 10px; padding: 10px; width: 200px;">
                 <img src="@pais.FlagUrl" alt="Bandeira de @pais.OfficialName" width="100" />
@@ -22,5 +22,5 @@
 }
 else
 {
-    <p>ERRO : não temos lista </p>
+    <p>Nenhum país carregado.</p>
 }

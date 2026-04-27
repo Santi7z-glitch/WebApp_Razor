@@ -1,58 +1,45 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApp_14712.Models;
-using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace WebApp_14712.Pages;
-
-public class InfopaisModel : PageModel
+namespace WebApp_14712.Pages
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-
-    public InfopaisModel(IHttpClientFactory httpClientFactory)
+    public class InfopaisModel : PageModel
     {
-        _httpClientFactory = httpClientFactory;
-    }
-
-    public string? CodigoPais { get; set; }
-    public Pais? InfoPais { get; set; }
-
-    public async Task OnGetAsync(string? cod)
-    {
-        // Guardar o código do país recebido
-        CodigoPais = string.IsNullOrWhiteSpace(cod) ? "PT" : cod.ToUpperInvariant();
-
-        // Chamar a API para obter os dados do país
-        var client = _httpClientFactory.CreateClient("RestCountries");
-        var response = await client.GetAsync($"v3.1/alpha/{CodigoPais}");
-
-        if (!response.IsSuccessStatusCode)
+        // public void OnGet()
+        // {
+        // }
+        private readonly IHttpClientFactory _httpClientFactory;
+        public InfopaisModel(IHttpClientFactory httpClientFactory)
         {
-            return;
+            _httpClientFactory = httpClientFactory;
         }
 
-        // Tratar o JSON retornado pela API
-        var json = await response.Content.ReadAsStringAsync();
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var dados = JsonSerializer.Deserialize<List<CountryApiResponse>>(json, options);
+        public Pais InfoPais { get; set; }
+        public string CodigoPais { get; set; }
 
-        if (dados?.Count > 0)
+        public async Task<IActionResult> OnGetAsync(string cod)
         {
-            var primeiro = dados[0];
+            CodigoPais = cod;
+            var client = _httpClientFactory.CreateClient("RestCountries");
+            var response = await client.GetAsync($"v3.1/alpha/{CodigoPais}?fields=name,cca2,flags");
+            if (!response.IsSuccessStatusCode)
+            {
+                return NotFound();
+            }
+            var json = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var artigoResponse = JsonSerializer.Deserialize<CountryApiResponse>(json, options);
             
-            // Colocar a informação que precisamos no objeto InfoPais
             InfoPais = new Pais
             {
-                OfficialName = primeiro.name?.official,
-                Cca2 = primeiro.cca2,
-                FlagUrl = primeiro.flags?.png,
-                Capital = primeiro.capital?.FirstOrDefault() ?? "N/A",
-                Region = primeiro.region,
-                Population = primeiro.population?.ToString("N0") ?? "N/A"
+                OfficialName = artigoResponse.name?.official,
+                Cca2 = artigoResponse.cca2,
+                FlagUrl = artigoResponse.flags?.png
             };
+
+            return Page();
         }
     }
 }
-
