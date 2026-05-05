@@ -1,0 +1,27 @@
+@page
+@model DragonBallModel
+@{
+     ViewData[index: "Title"] = "Lista de Personagens";
+}
+
+<h1>Lista de Personagens</h1>
+
+@if (Model.DragonBalls?.Count > 0)
+{
+    <div style="display: flex; flex-wrap: wrap;">
+        @foreach (var personagem in Model.DragonBalls)
+        {
+            <div style="border: 1px solid #ccc; margin: 10px; padding: 10px; width: 200px;">
+                <a asp-page="/InfoPersonagem" asp-route-cod="@personagem.Name">
+                    <img src="@personagem.ImgUrl" alt="Imagem de @personagem.Name" width="100" />
+                </a>
+                <p><strong>@personagem.Name</strong></p>
+                <!-- <p><a asp-page="/InfoPersonagem" asp-route-cod="@personagem.Name">Ver detalhes</a></p> -->
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Nenhum personagem carregado.</p>
+}
